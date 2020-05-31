@@ -53,5 +53,56 @@ public class EventsDao {
 			return null ;
 		}
 	}
+	
+	public List<String> getAllCategorie() {
+		String sql = "SELECT DISTINCT e.offense_category_id AS c " + 
+				"FROM `events` AS e " + 
+				"ORDER BY e.offense_category_id ASC ";
+		
+		List<String> categorie = new ArrayList<>();
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				String s = res.getString("c");
+				categorie.add(s);
+			}
+			conn.close();
+			return categorie;
+			
+		}catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<Integer> getAllMesi() {
+		String sql = "SELECT DISTINCT MONTH(e.reported_date) AS mese " + 
+				"FROM `events` AS e " + 
+				"ORDER BY Month(e.reported_date) ASC ";
+		
+		List<Integer> mesi = new ArrayList<>();
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				Integer i = res.getInt("mese");
+				mesi.add(i);
+			}
+			conn.close();
+			return mesi;
+			
+		}catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+	}
+
 
 }

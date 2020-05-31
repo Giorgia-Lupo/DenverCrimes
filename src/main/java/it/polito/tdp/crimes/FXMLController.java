@@ -5,6 +5,7 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.crimes.model.Model;
@@ -25,10 +26,10 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxCategoria"
-    private ComboBox<?> boxCategoria; // Value injected by FXMLLoader
+    private ComboBox<String> boxCategoria; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAnalisi"
     private Button btnAnalisi; // Value injected by FXMLLoader
@@ -44,12 +45,21 @@ public class FXMLController {
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
-
+    
+    	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	String categoria = this.boxCategoria.getValue();
+    	Integer mese = this.boxMese.getValue();
+    	
+    	if(categoria==null) {
+    		this.txtResult.appendText("Devi selezionare una categoria!\n");
+    	}
+    	if(mese==null) {
+    		this.txtResult.appendText("Devi selezionare un mese!\n");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -65,5 +75,7 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.boxCategoria.getItems().addAll(model.getAllCategorie());
+    	this.boxMese.getItems().addAll(this.model.getAllMesi());
     }
 }
