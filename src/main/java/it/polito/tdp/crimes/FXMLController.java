@@ -6,8 +6,10 @@ package it.polito.tdp.crimes;
 
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.db.Adiacenze;
 import it.polito.tdp.crimes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -60,6 +62,15 @@ public class FXMLController {
     	if(mese==null) {
     		this.txtResult.appendText("Devi selezionare un mese!\n");
     	}
+    	
+    	this.model.creaGrafo(categoria, mese);
+    	txtResult.appendText(String.format("Grafo creato! %d vertici, %d archi\n",this.model.nVertici(), this.model.nArchi()));
+    	
+    	txtResult.appendText("L'elenco degli archi con peso maggiore del peso medio del grafo e': \n");
+    	for(Adiacenze a : this.model.getArchi(categoria, mese)) {
+    		txtResult.appendText(""+a.getT1()+"---"+a.getT2()+"---peso: "+a.getPeso()+"\n");
+    	}
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

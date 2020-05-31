@@ -103,6 +103,72 @@ public class EventsDao {
 			return null;
 		}
 	}
+	
+	public List<String> getTipi(String categoria, Integer mese) {
+		String sql = "SELECT distinct e.offense_type_id AS tipo " + 
+				"FROM events AS e " + 
+				"WHERE e.offense_category_id = ? " + 
+				"AND Month(e.reported_date) = ? ";
+		
+		List<String> tipi = new ArrayList<>();
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			st.setString(1, categoria);
+			st.setInt(2, mese);
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				String t = res.getString("tipo");
+				tipi.add(t);
+			}
+			conn.close();
+			return tipi;
+			
+		}catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<Adiacenze> getAdiacenze(String categoria, Integer mese){
+		String sql = "SELECT e1.offense_type_id AS tipo1, e2.offense_type_id AS tipo2, COUNT(distinct(e1.neighborhood_id)) AS peso " + 
+				"FROM events AS e1, events AS e2 " + 
+				"WHERE e1.offense_category_id = ? AND e2.offense_category_id = ? " + 
+				"AND Month(e1.reported_date) = ? AND MONTH(e2.reported_date) = ? " + 
+				"and e1.neighborhood_id = e2.neighborhood_id " + 
+				"AND e1.offense_type_id != e2.offense_type_id " + 
+				"GROUP BY e1.offense_type_id, e2.offense_type_id"; 
+		
+		List<Adiacenze> adiacenze = new ArrayList<>();
+		
+		try {
+			Connection conn = DBConnect.getConnection() ;
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			st.setString(1, categoria);
+			st.setString(2, categoria);
+			st.setInt(3, mese);
+			st.setInt(4, mese);
+			ResultSet res = st.executeQuery() ;
+			
+			while(res.next()) {
+				String t1 = res.getString("tipo1");
+				String t2 = res.getString("tipo2");
+				int peso = res.getInt("peso");
+				Adiacenze a = new Adiacenze(t1, t2, peso);
+				adiacenze.add(a);
+			}
+			conn.close();
+			return adiacenze;
+			
+		}catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+	}
 
 
 }
