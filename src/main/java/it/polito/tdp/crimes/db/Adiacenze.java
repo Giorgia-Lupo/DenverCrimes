@@ -36,5 +36,12 @@ public class Adiacenze {
 	public void setPeso(double peso) {
 		this.peso = peso;
 	}
+
+	@Override
+	public String toString() {
+		return "Adiacenze [t1=" + t1 + ", t2=" + t2 + ", peso=" + peso + "]";
+	}
+	
+	
 	
 }

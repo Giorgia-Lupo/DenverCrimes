@@ -22,6 +22,8 @@ public class Model {
 	private Event e;
 	private Graph<String, DefaultWeightedEdge> grafo ; 
 	
+	private List<String> soluzione;
+	
 	public Model() {
 		dao = new EventsDao();
 		this.eventi = new ArrayList<>(dao.listAllEvents());
@@ -79,4 +81,30 @@ public class Model {
 		return this.dao.getAllMesi();
 	}
 	
+	public List<String> trovaPercorso(String sorgente, String destinazione){
+		this.soluzione = new ArrayList<>();
+		List<String> parziale = new ArrayList<>();
+		parziale.add(sorgente);
+		this.ricorsione(destinazione, parziale, 0);	
+		return soluzione;
+	}
+	
+	private void ricorsione(String destinazione, List<String> parziale, int livello) {
+		//caso terminale --> se sono già a destinazione, questa è migliore di soluzione?
+		if(parziale.get(parziale.size()-1).equals(destinazione)) {
+			if(parziale.size() > this.soluzione.size())
+				this.soluzione = new ArrayList<>(parziale);
+		}
+		
+		for(String vicino : Graphs.neighborListOf(this.grafo, parziale.get(parziale.size()-1))){
+			//aciclico = non ho già preso il vertice
+			if(!parziale.contains(vicino)) {
+				parziale.add(vicino);
+				ricorsione(destinazione, parziale, livello+1);
+				parziale.remove(vicino);
+			}
+			
+		}
+		
+	}
 }
